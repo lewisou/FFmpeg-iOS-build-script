@@ -6,8 +6,9 @@ FF_VERSION="4.2"
 if [[ $FFMPEG_VERSION != "" ]]; then
   FF_VERSION=$FFMPEG_VERSION
 fi
-SOURCE="ffmpeg-$FF_VERSION"
-FAT="FFmpeg-iOS"
+# SOURCE="ffmpeg-$FF_VERSION"
+SOURCE="../ffmpeg"
+FAT="../../libs/ffmpeg/ios"
 
 SCRATCH="scratch"
 # must be an absolute path
@@ -141,8 +142,21 @@ then
 		    --extra-cflags="$CFLAGS" \
 		    --extra-ldflags="$LDFLAGS" \
 		    --prefix="$THIN/$ARCH" \
+			--disable-everything \
+			--enable-static \
+			--enable-decoder=h264 \
+			--enable-decoder=aac \
+			--enable-parser=h264 \
+			--enable-parser=aac \
+			--enable-swscale \
+			--enable-demuxer=rtp \
+			--enable-demuxer=rtsp \
+			--enable-encoder=aac \
+			--enable-muxer=adts \
+			--enable-protocol=tcp \
 		|| exit 1
 
+		make clean
 		make -j3 install $EXPORT || exit 1
 		cd $CWD
 	done
